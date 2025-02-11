@@ -8,6 +8,7 @@ import {
       IonToolbar 
   } from '@ionic/react';
   
+  
   const About: React.FC = () => {
     return (
       <IonPage>
