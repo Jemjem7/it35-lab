@@ -1,20 +1,24 @@
 import { 
   IonButton,
-  IonButtons,
-    IonContent, 
-    IonHeader, 
-    IonMenuButton, 
-    IonPage, 
-    IonTitle, 
-    IonToolbar, 
-    useIonRouter
+  IonContent, 
+  IonHeader, 
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonPage, 
+  IonTitle, 
+  IonToolbar,
+  IonText,
+  useIonRouter
 } from '@ionic/react';
 
 const Login: React.FC = () => {
   const navigation = useIonRouter();
+
   const doLogin = () => {
-      navigation.push('/it35-lab/app','forward','replace');
-  }
+    navigation.push('/it35-lab/app', 'forward', 'replace');
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -22,10 +26,22 @@ const Login: React.FC = () => {
           <IonTitle>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className='ion-padding'>
-          <IonButton onClick={() => doLogin()} expand="full">
-              Login
+      <IonContent className="ion-padding ion-text-center">
+        <div className="login-form">
+          <IonItem>
+            <IonLabel position="floating">Username</IonLabel>
+            <IonInput type="text" />
+          </IonItem>
+          
+          <IonItem>
+            <IonLabel position="floating">Password</IonLabel>
+            <IonInput type="password" />
+          </IonItem>
+          
+          <IonButton onClick={doLogin} expand="full">
+            Login
           </IonButton>
+        </div>
       </IonContent>
     </IonPage>
   );
