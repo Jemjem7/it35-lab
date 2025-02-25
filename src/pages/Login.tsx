@@ -27,25 +27,22 @@ const Login: React.FC = () => {
           <IonTitle>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding ion-text-center">
+      <IonContent className="ion-padding ion-text-center ion-justify-content-center">
         <div className="login-form">
 
 
         <IonAvatar className="ion-margin-bottom">
-  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+         <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
         </IonAvatar>
 
 
-
-
-
           <IonItem>
-            <IonLabel position="floating">Username</IonLabel>
+            <IonLabel position="floating">Username:</IonLabel>
             <IonInput type="text" />
           </IonItem>
           
           <IonItem>
-            <IonLabel position="floating">Password</IonLabel>
+            <IonLabel position="floating">Password:</IonLabel>
             <IonInput type="password" />
           </IonItem>
           
