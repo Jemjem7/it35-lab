@@ -5,7 +5,12 @@ import {
       IonMenuButton, 
       IonPage, 
       IonTitle, 
-      IonToolbar 
+      IonToolbar, 
+      IonSearchbar,
+      IonGrid,
+      IonRow,
+      IonCol,
+
   } from '@ionic/react';
   
   const Search: React.FC = () => {
@@ -29,6 +34,17 @@ import {
             }}
           >
             Search
+
+       <IonSearchbar placeholder="Default"></IonSearchbar>
+       <IonSearchbar color="primary" placeholder="Primary"></IonSearchbar>
+       <IonSearchbar color="secondary" placeholder="Secondary"></IonSearchbar>
+       <IonSearchbar color="tertiary" placeholder="Tertiary"></IonSearchbar>
+       <IonSearchbar color="success" placeholder="Success"></IonSearchbar>
+       <IonSearchbar color="warning" placeholder="Warning"></IonSearchbar>
+       <IonSearchbar color="danger" placeholder="Danger"></IonSearchbar>
+       <IonSearchbar color="light" placeholder="Light"></IonSearchbar>
+       <IonSearchbar color="medium" placeholder="Medium"></IonSearchbar>
+       <IonSearchbar color="dark" placeholder="Dark"></IonSearchbar>
           </div>
   
         </IonContent>
