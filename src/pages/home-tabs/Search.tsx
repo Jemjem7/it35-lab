@@ -25,28 +25,22 @@ import {
           </IonToolbar>
         </IonHeader>
         <IonContent fullscreen>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '100%',
-            }}
-          >
-            Search
+           
+        <IonGrid>
+        <IonRow className="ion-justify-content-center">
 
-       <IonSearchbar placeholder="Default"></IonSearchbar>
-       <IonSearchbar color="primary" placeholder="Primary"></IonSearchbar>
-       <IonSearchbar color="secondary" placeholder="Secondary"></IonSearchbar>
-       <IonSearchbar color="tertiary" placeholder="Tertiary"></IonSearchbar>
-       <IonSearchbar color="success" placeholder="Success"></IonSearchbar>
-       <IonSearchbar color="warning" placeholder="Warning"></IonSearchbar>
-       <IonSearchbar color="danger" placeholder="Danger"></IonSearchbar>
-       <IonSearchbar color="light" placeholder="Light"></IonSearchbar>
-       <IonSearchbar color="medium" placeholder="Medium"></IonSearchbar>
-       <IonSearchbar color="dark" placeholder="Dark"></IonSearchbar>
-          </div>
-  
+              <IonCol size="12" sizeMd="8" sizeLg="6" className="ion-padding">
+              <IonSearchbar 
+                placeholder="Search"
+                debounce={0} // Optional: Optional debounce for input delay
+                showClearButton="focus"
+                
+         
+                 />
+               </IonCol>
+            </IonRow>
+          </IonGrid>
+         
         </IonContent>
       </IonPage>
     );
