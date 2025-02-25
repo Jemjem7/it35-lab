@@ -9,7 +9,8 @@ import {
   IonTitle, 
   IonToolbar,
   IonText,
-  useIonRouter
+  useIonRouter,
+  IonAvatar
 } from '@ionic/react';
 
 const Login: React.FC = () => {
@@ -28,6 +29,16 @@ const Login: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding ion-text-center">
         <div className="login-form">
+
+
+        <IonAvatar className="ion-margin-bottom">
+  <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </IonAvatar>
+
+
+
+
+
           <IonItem>
             <IonLabel position="floating">Username</IonLabel>
             <IonInput type="text" />
