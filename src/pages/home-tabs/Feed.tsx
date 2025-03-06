@@ -5,7 +5,7 @@ import {
       IonMenuButton, 
       IonPage, //
       IonTitle, //
-      IonToolbar //
+      IonToolbar, //
       IonList,
       IonItem,
       IonLabel,
@@ -23,9 +23,7 @@ import {
       { id: 5, user: "Unknown", content: "check my new security project!", time: "3 days ago " },
 
 
-
-
-    ]
+     ]
     return (
       <IonPage>
         <IonHeader>
@@ -37,6 +35,20 @@ import {
           </IonToolbar>
         </IonHeader>
         <IonContent fullscreen>
+          <IonList>
+            {feedData.map((item) => (
+              <IonItem key={item.id}>
+                <IonAvatar slot="start">
+                  <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9da77e3b?d=identicon&f=y" />
+                </IonAvatar>
+                <IonLabel>
+                  <h2>{item.user}</h2>
+                  <p>{item.content}</p>
+                  <p>{item.time}</p>
+                </IonLabel>
+              </IonItem>
+            ))}
+          </IonList>
           <div
             style={{
               display: 'flex',
