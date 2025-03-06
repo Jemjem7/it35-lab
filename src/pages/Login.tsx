@@ -13,12 +13,12 @@ import {
   IonAvatar,
   IonIcon  // Added IonIcon for the eye toggle
 } from '@ionic/react';
-import { eye, eyeOff } from 'ionicons/icons'; // Importing icons for show/hide password
-import { useState } from 'react'; // Importing useState for managing password visibility
+import { eye, eyeOff } from 'ionicons/icons'; 
+import { useState } from 'react'; 
 
 const Login: React.FC = () => {
   const navigation = useIonRouter();
-  const [showPassword, setShowPassword] = useState(false); // State to track password visibility
+  const [showPassword, setShowPassword] = useState(false); // show , hide password
 
   // Function to toggle password visibility
   const togglePasswordVisibility = () => {
