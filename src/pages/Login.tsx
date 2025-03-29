@@ -49,8 +49,8 @@ const Login: React.FC = () => {
     }, 300);
   };
   
- return (
-   <IonPage>
+  return (
+    <IonPage>
       <IonContent className='ion-padding'>
         <div style={{
           display: 'flex',
