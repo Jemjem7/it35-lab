@@ -104,7 +104,7 @@ const Login: React.FC = () => {
         </IonButton> 
 
         <IonButton routerLink="/it35-lab/register" expand="full" fill="clear" shape='round'>
-        Register here!
+        DONT HAVE AN ACCOUNT? REGISTER HERE!
         </IonButton>
 
         {/* Reusable AlertBox Component */}
