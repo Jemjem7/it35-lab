@@ -10,7 +10,7 @@ import {
   IonToast,  
   useIonRouter
 } from '@ionic/react';
-import { logoIonic } from 'ionicons/icons';
+import { IonImg } from '@ionic/react';
 import { useState } from 'react';
 import { supabase } from '../utils/supabaseClient';
 
@@ -49,8 +49,8 @@ const Login: React.FC = () => {
     }, 300);
   };
   
- return (
-   <IonPage>
+  return (
+    <IonPage>
       <IonContent className='ion-padding'>
         <div style={{
           display: 'flex',
@@ -68,19 +68,18 @@ const Login: React.FC = () => {
               height: '150px',
               borderRadius: '50%', 
               overflow: 'hidden' 
-            }}
-          >
-            <IonIcon 
-              icon={logoIonic}
-              color='primary'
-              style={{ fontSize: '120px', color: '#6c757d' }} 
-            />
+            }}>
+           <IonImg
+      src="https://freesvg.org/img/abstract-user-flat-4.png"
+      
+      alt="user"
+    ></IonImg>
           </IonAvatar>
           <h1 style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-          }}>USER LOGIN</h1>
+          }}>LOGIN</h1>
           <IonInput
             label="Email" 
             labelPlacement="floating" 
@@ -102,10 +101,10 @@ const Login: React.FC = () => {
         </div>
         <IonButton onClick={doLogin} expand="full" shape='round'>
           Login
-        </IonButton>
+        </IonButton> 
 
         <IonButton routerLink="/it35-lab/register" expand="full" fill="clear" shape='round'>
-          Don't have an account? Register here
+        Register here!
         </IonButton>
 
         {/* Reusable AlertBox Component */}
