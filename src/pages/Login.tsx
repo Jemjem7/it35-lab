@@ -61,7 +61,7 @@ const Login: React.FC = () => {
         }}>
           <IonAvatar style={{ width: '120px', height: '120px' }}>
             <IonImg
-              src="https://freesvg.org/img/rick-mii.png"
+              src="https://avatars.githubusercontent.com/u/119357656?v=4"
               alt="User Avatar"
             />
           </IonAvatar>
