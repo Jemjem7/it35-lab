@@ -71,7 +71,7 @@ const Favorites: React.FC = () => {
                   aria-label={`Visit ${item.title}'s page`}
                 >
                   <img
-                    src={item.src}
+                    src={item.src || 'https://via.placeholder.com/200x220?text=No+Image'}
                     alt={item.title}
                     className="favorite-image awesome-image"
                   />
