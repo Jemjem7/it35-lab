@@ -7,85 +7,85 @@ import {
   IonTitle,
   IonToolbar
 } from '@ionic/react';
+import './Favorites.css';
+
+// Add more visually striking and inspiring favorites
+const artImages = [
+  {
+    src: 'https://i.postimg.cc/3wL8b6yB/berserk.jpg',
+    title: 'Berserk by Kentaro Miura',
+    link: 'https://en.wikipedia.org/wiki/Berserk_(manga)'
+  },
+  {
+    src: 'https://i.postimg.cc/8z8wQw8y/onepiece.jpg',
+    title: 'One Piece by Eiichiro Oda',
+    link: 'https://onepiece.fandom.com/wiki/Eiichiro_Oda'
+  },
+  {
+    src: 'https://i.postimg.cc/3Jw6kQ2d/kimjunggi.jpg',
+    title: 'Kim Jung Gi',
+    link: 'https://www.kimjunggi.net/'
+  },
+  {
+    src: 'https://i.postimg.cc/3x3QzSGq/gawxart.jpg',
+    title: 'Gawx Art',
+    link: 'https://www.instagram.com/gawx_art/?hl=en'
+  },
+  {
+    src: 'https://i.postimg.cc/3Nw2yQw8/akira.jpg',
+    title: 'Akira by Katsuhiro Otomo',
+    link: 'https://en.wikipedia.org/wiki/Akira_(manga)'
+  },
+  {
+    src: 'https://i.postimg.cc/3Jw6kQ2d/loish.jpg',
+    title: 'Loish',
+    link: 'https://www.instagram.com/loisvb/'
+  }
+];
 
 const Favorites: React.FC = () => {
-  const artImages = [
-    {
-      src: 'https://i.postimg.cc/Znd1M0V1/vagabond.jpg',
-      title: 'Vagabond',
-      link: null
-    },
-    {
-      src: 'https://i.postimg.cc/jdKLj7TX/kimjunggi.jpg',
-      title: 'Kim Jung Gi',
-      link: null
-    },
-    {
-      src: 'https://i.postimg.cc/mr9XNY2R/gawxart.jpg',
-      title: 'Gawx Art',
-      link: 'https://www.instagram.com/gawx_art/?hl=en'
-    }
-  ];
-
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="primary">
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Favorites</IonTitle>
+          <IonTitle>🌟 Favorites Gallery 🌟</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <div style={{ padding: '16px' }}>
-          <h2 style={{ textAlign: 'center' }}>My Favorite Manga/Artists</h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-              gap: '16px',
-              marginTop: '20px'
-            }}
-          >
+      <IonContent fullscreen className="favorites-bg">
+        <div className="favorites-container">
+          <h2 className="favorites-header gradient-text">Legendary Inspirations</h2>
+          <p className="favorites-description">
+            Dive into a world of creativity! These manga and artists have shaped the way I see art and storytelling. <br />
+            <span className="favorites-quote">“Art enables us to find ourselves and lose ourselves at the same time.” – Thomas Merton</span>
+          </p>
+          <div className="favorites-grid awesome-grid">
             {artImages.map((item, index) => (
-              <div key={index} style={{ textAlign: 'center' }}>
-                {item.link ? (
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">
-                    <img
-                      src={item.src}
-                      alt={item.title}
-                      style={{
-                        width: '100%',
-                        borderRadius: '8px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                      }}
-                    />
-                  </a>
-                ) : (
+              <div key={index} className="favorite-item awesome-item">
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit ${item.title}'s page`}
+                >
                   <img
                     src={item.src}
                     alt={item.title}
-                    style={{
-                      width: '100%',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                    }}
+                    className="favorite-image awesome-image"
                   />
-                )}
-                <p
-                  style={{
-                    marginTop: '8px',
-                    fontWeight: 'bold',
-                    color: '#fff'
-                  }}
-                >
-                  {item.title}
-                </p>
+                </a>
+                <p className="favorite-title awesome-title">{item.title}</p>
               </div>
             ))}
           </div>
+          <div className="favorites-footer">
+            <p>✨ Want to suggest an artist or manga? <a href="mailto:youremail@example.com">Contact me!</a> ✨</p>
+          </div>
         </div>
+        {/* Subtle animated background effect */}
+        <div className="favorites-bg-effect"></div>
       </IonContent>
     </IonPage>
   );

@@ -1,0 +1,79 @@
+.favorites-container {
+  padding: 16px;
+  background: #1a1a1a;
+  min-height: 100vh;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.favorite-item {
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.favorite-item:hover {
+  transform: translateY(-5px);
+}
+
+.favorite-image {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.favorite-item:hover .favorite-image {
+  transform: scale(1.05);
+}
+
+.favorite-title {
+  margin-top: 8px;
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.1em;
+}
+
+.favorites-header {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 24px;
+  font-size: 1.5em;
+  font-weight: 600;
+}
+
+/* Fix for Ionic content background */
+ion-content {
+  --background: #1a1a1a;
+}
+
+/* Fix for Ionic toolbar */
+ion-toolbar {
+  --background: #2a2a2a;
+  --color: #fff;
+}
+
+/* Fix for Ionic header */
+ion-header {
+  --background: #2a2a2a;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .favorites-container {
+    padding: 12px;
+  }
+  
+  .favorites-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+  }
+  
+  .favorite-title {
+    font-size: 1em;
+  }
+} 
