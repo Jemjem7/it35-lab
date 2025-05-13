@@ -1,46 +1,87 @@
-import { 
+import React, { useState } from 'react';
+import {
   IonButtons,
-    IonContent, 
-    IonHeader, 
-    IonMenuButton, 
-    IonPage, 
-    IonTitle, 
-    IonToolbar, 
-    IonSearchbar,
-    IonGrid,
-    IonRow,
-    IonCol,
-
+  IonContent,
+  IonHeader,
+  IonMenuButton,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonSearchbar,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonSpinner,
+  IonText
 } from '@ionic/react';
 
+interface WikiResult {
+  title: string;
+  snippet: string;
+  pageId: number;
+}
+
 const Search: React.FC = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<WikiResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSearch = async (searchText: string) => {
+    setQuery(searchText);
+    if (!searchText.trim()) {
+      setResults([]);
+      setError(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(
+        `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(
+          searchText
+        )}&utf8=&format=json&origin=*`
+      );
+      const data = await response.json();
+
+      if (data.query && data.query.search) {
+        setResults(
+          data.query.search.map((item: any) => ({
+            title: item.title,
+            snippet: item.snippet,
+            pageId: item.pageid
+          }))
+        );
+      } else {
+        setResults([]);
+      }
+    } catch (err) {
+      setError('Failed to fetch search results.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
-            <IonMenuButton></IonMenuButton>
+            <IonMenuButton />
           </IonButtons>
-          <IonTitle>Search</IonTitle>
+          <IonTitle>Test Search Bar</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-         
-      <IonGrid>
-      <IonRow className="ion-justify-content-center">
-
-            <IonCol size="12" sizeMd="8" sizeLg="6" className="ion-padding">
-            <IonSearchbar 
-              placeholder="Search"
-              debounce={0} // Optional: Optional debounce for input delay
-              showClearButton="focus"
-              
-       
-               />
-             </IonCol>
-          </IonRow>
-        </IonGrid>
-       
+      <IonContent>
+        <IonSearchbar
+          placeholder="Type here..."
+          value={query}
+          onIonInput={e => setQuery(e.detail.value!)}
+        />
       </IonContent>
     </IonPage>
   );
