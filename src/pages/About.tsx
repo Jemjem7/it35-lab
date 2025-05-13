@@ -17,10 +17,11 @@ import {
     IonCol
 } from '@ionic/react';
 import { school, code, brush, heart } from 'ionicons/icons';
+import './About.css';
 
 const About: React.FC = () => {
   return (
-    <IonPage>
+    <IonPage className="about-page">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot='start'>
@@ -29,8 +30,9 @@ const About: React.FC = () => {
           <IonTitle>About</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen className="ion-padding">
-        <IonCard>
+      <IonContent fullscreen className="ion-padding about-content">
+        <div className="background-overlay"></div>
+        <IonCard className="glass-card">
           <IonCardHeader>
             <IonCardTitle>Welcome to My Profile</IonCardTitle>
             <IonCardSubtitle>Student & Developer</IonCardSubtitle>
@@ -43,7 +45,7 @@ const About: React.FC = () => {
         <IonGrid>
           <IonRow>
             <IonCol size="12" sizeMd="6">
-              <IonCard>
+              <IonCard className="glass-card">
                 <IonCardHeader>
                   <IonIcon icon={school} size="large" color="primary" />
                   <IonCardTitle>Education</IonCardTitle>
@@ -55,7 +57,7 @@ const About: React.FC = () => {
             </IonCol>
 
             <IonCol size="12" sizeMd="6">
-              <IonCard>
+              <IonCard className="glass-card">
                 <IonCardHeader>
                   <IonIcon icon={code} size="large" color="success" />
                   <IonCardTitle>Programming</IonCardTitle>
@@ -67,7 +69,7 @@ const About: React.FC = () => {
             </IonCol>
 
             <IonCol size="12" sizeMd="6">
-              <IonCard>
+              <IonCard className="glass-card">
                 <IonCardHeader>
                   <IonIcon icon={brush} size="large" color="warning" />
                   <IonCardTitle>Design & Arts</IonCardTitle>
@@ -79,7 +81,7 @@ const About: React.FC = () => {
             </IonCol>
 
             <IonCol size="12" sizeMd="6">
-              <IonCard>
+              <IonCard className="glass-card">
                 <IonCardHeader>
                   <IonIcon icon={heart} size="large" color="danger" />
                   <IonCardTitle>Interests</IonCardTitle>

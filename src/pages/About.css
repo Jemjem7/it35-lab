@@ -1,0 +1,73 @@
+.about-page {
+  --background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+.about-content {
+  position: relative;
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    linear-gradient(45deg, 
+      rgba(255, 255, 255, 0.05) 25%, 
+      transparent 25%, 
+      transparent 50%, 
+      rgba(255, 255, 255, 0.05) 50%, 
+      rgba(255, 255, 255, 0.05) 75%, 
+      transparent 75%, 
+      transparent
+    );
+  background-size: 100% 100%, 100% 100%, 30px 30px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+}
+
+.glass-card ion-card-title {
+  color: #ffffff;
+}
+
+.glass-card ion-card-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.glass-card p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Add some animation to the background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.about-page {
+  animation: gradientShift 15s ease infinite;
+  background-size: 200% 200%;
+} 
