@@ -8,6 +8,7 @@ import {
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../utils/supabaseClient';
 import { pencil, trash, send, ellipsisVertical, heartOutline, heart, chatbubbleOutline, sendOutline } from 'ionicons/icons';
+import ReactionPicker from './ReactionPicker';
 
 interface Post {
   post_id: string;
@@ -17,7 +18,7 @@ interface Post {
   post_content: string;
   post_created_at: string;
   post_updated_at: string;
-  likes?: number;
+  reactions?: { [key: string]: number };
   comments?: any[];
   pinned?: boolean;
 }
@@ -80,27 +81,32 @@ const FeedContainer = () => {
     })();
   }, []);
 
-  const handleLike = async (postId: number) => {
+  const handleReaction = async (postId: string, reaction: string) => {
     try {
-      const post = posts.find(p => p.post_id === postId.toString());
+      const post = posts.find(p => p.post_id === postId);
       if (!post) return;
 
-      const currentLikes = post.likes || 0;
+      const currentReactions = post.reactions || {};
+      const newReactions = {
+        ...currentReactions,
+        [reaction]: (currentReactions[reaction] || 0) + 1
+      };
+
       const { error } = await supabase
         .from('posts')
-        .update({ likes: currentLikes + 1 })
-        .eq('post_id', postId.toString());
+        .update({ reactions: newReactions })
+        .eq('post_id', postId);
 
       if (error) throw error;
 
-      setPosts(posts.map(p => 
-        p.post_id === postId.toString() 
-          ? { ...p, likes: (p.likes || 0) + 1 }
+      setPosts(posts.map(p =>
+        p.post_id === postId
+          ? { ...p, reactions: newReactions }
           : p
       ));
     } catch (error) {
-      console.error('Error liking post:', error);
-      setToastMessage('Failed to like post');
+      console.error('Error adding reaction:', error);
+      setToastMessage('Failed to add reaction');
     }
   };
 
@@ -348,10 +354,12 @@ const FeedContainer = () => {
                   </IonText>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <IonButton fill="clear" onClick={() => handleLike(parseInt(post.post_id))}>
-                      <IonIcon icon={(post.likes || 0) > 0 ? heart : heartOutline} color={(post.likes || 0) > 0 ? 'danger' : 'medium'} />
-                      <IonText>{post.likes || 0}</IonText>
-                    </IonButton>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <ReactionPicker onReactionSelect={(reaction) => handleReaction(post.post_id, reaction)} />
+                      <IonText>
+                        {Object.entries(post.reactions || {}).reduce((sum, [_, count]) => sum + count, 0)}
+                      </IonText>
+                    </div>
                     <IonButton fill="clear" onClick={() => setActivePost(activePost === parseInt(post.post_id) ? null : parseInt(post.post_id))}>
                       <IonIcon icon={chatbubbleOutline} />
                       <IonText>{post.comments?.length || 0}</IonText>
@@ -361,7 +369,7 @@ const FeedContainer = () => {
                   {activePost === parseInt(post.post_id) && (
                     <div className="ion-margin-top">
                       <IonList>
-                        {post.comments.map(comment => (
+                        {(post.comments || []).map(comment => (
                           <IonItem key={comment.id}>
                             <IonAvatar slot="start">
                               <img src={comment.user.avatar} alt={comment.user.name} />
