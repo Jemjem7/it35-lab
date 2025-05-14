@@ -37,6 +37,8 @@ import EditProfilePage from './EditProfilePage';
         {name:'Home', url: '/it35-lab/app/home', icon: homeOutline},
         {name:'About', url: '/it35-lab/app/about', icon: rocketOutline},
         {name:'Profile', url: '/it35-lab/app/profile', icon: settingsOutline},
+        { name: 'Details', url: '/it35-lab/app/home/details', icon: settingsOutline }, // Add Details
+
     ]
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
