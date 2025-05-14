@@ -18,6 +18,12 @@ import CreatePostModal from '../../components/CreatePostModal';
 const Feed: React.FC = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
 
+  const handlePostCreate = () => {
+    // Logic to handle post creation
+    console.log('Post Created');
+    setShowCreatePost(false);  // Close the modal after creating a post
+  };
+
   return (
     <IonPage>
       <IonHeader>
@@ -38,6 +44,7 @@ const Feed: React.FC = () => {
         <CreatePostModal 
           isOpen={showCreatePost}
           onClose={() => setShowCreatePost(false)}
+          onPostCreate={handlePostCreate}  // Pass the handler here
         />
       </IonContent>
     </IonPage>

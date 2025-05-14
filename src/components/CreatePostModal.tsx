@@ -1,97 +1,145 @@
 import {
-    IonModal,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonButton,
-    IonButtons,
-    IonIcon,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonAvatar,
-    IonTextarea,
-  } from '@ionic/react';
-  import { close, send } from 'ionicons/icons';
-  import { useState } from 'react';
-  
-  interface CreatePostModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    user?: any; // Add this to show avatar
-    onPostCreated?: (newPost: any) => void; // Optional callback
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonTextarea,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonImg
+} from '@ionic/react';
+import { close, image } from 'ionicons/icons';
+import { useState } from 'react';
+import { supabase } from '../utils/supabaseClient';
+
+// Handle Feed Creation (Uploading image and inserting into database)
+const handleFeedCreate = async (post: { content: string; image: string | null }) => {
+  try {
+    let imageUrl = null;
+    
+    // If an image is selected, upload it to Supabase Storage
+    if (post.image) {
+      const fileName = `feeds/${Date.now()}_${Math.random()}.jpg`;
+      const { data, error: uploadError } = await supabase
+        .storage
+        .from('feed-images')  // Assuming your bucket name is 'feed-images'
+        .upload(fileName, post.image, { contentType: 'image/jpeg' });
+      
+      if (uploadError) {
+        throw uploadError;
+      }
+      
+      // Get the public URL of the uploaded image
+      imageUrl = supabase.storage.from('feed-images').getPublicUrl(data.path).data.publicUrl;
+    }
+
+    // Insert the feed item into the 'create_post_modal' table
+    const { error: dbError } = await supabase
+      .from('create_post_modal')
+      .insert([
+        {
+          user_id: 1, // Replace with actual user ID
+          username: 'John Doe', // Replace with actual username
+          avatar_url: 'some-avatar-url', // Replace with actual avatar URL
+          post_content: post.content,
+          post_created_at: new Date().toISOString(),
+          post_updated_at: new Date().toISOString(),
+          image_url: imageUrl, // Add the image URL to the post
+        },
+      ]);
+
+    if (dbError) {
+      console.error('Error inserting post:', dbError.message);
+      return;
+    }
+
+  } catch (error) {
+    console.error('Error during feed creation:', error);
   }
-  
-  const CreatePostModal: React.FC<CreatePostModalProps> = ({
-    isOpen,
-    onClose,
-    user,
-    onPostCreated,
-  }) => {
-    const [content, setContent] = useState('');
-  
-    const handleSubmit = () => {
-      // Example only - replace with your actual post logic
-      const newPost = {
-        content,
-        user,
-        createdAt: new Date(),
+};
+
+// Define the CreatePostModal component
+const CreatePostModal: React.FC<{ isOpen: boolean; onClose: () => void; onPostCreate: (post: { content: string; image: string | null }) => void }> = ({
+  isOpen,
+  onClose,
+  onPostCreate
+}) => {
+  const [postContent, setPostContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  // Handle image selection
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result as string);
       };
-  
-      // Call parent to refresh feed, if needed
-      onPostCreated?.(newPost);
-  
-      // Clear and close
-      setContent('');
-      onClose();
-    };
-  
-    return (
-      <IonModal isOpen={isOpen} onDidDismiss={onClose}>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle>Create Post</IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={onClose}>
-                <IonIcon icon={close} />
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <IonGrid>
-            <IonRow>
-              <IonCol size="auto">
-                <IonAvatar>
-                  <img
-                    alt="avatar"
-                    src={
-                      user?.user_metadata?.avatar_url ||
-                      'https://ionicframework.com/docs/img/demos/avatar.svg'
-                    }
-                  />
-                </IonAvatar>
-              </IonCol>
-              <IonCol>
-                <IonTextarea
-                  placeholder="What's on your mind?"
-                  value={content}
-                  onIonChange={(e) => setContent(e.detail.value!)}
-                  autoGrow
-                />
-              </IonCol>
-              <IonCol size="auto" className="ion-align-self-end">
-                <IonButton onClick={handleSubmit} shape="round">
-                  <IonIcon icon={send} slot="icon-only" />
-                </IonButton>
-              </IonCol>
-            </IonRow>
-          </IonGrid>
-        </IonContent>
-      </IonModal>
-    );
+      reader.readAsDataURL(file);
+    }
   };
-  
-  export default CreatePostModal;
-  
+
+  // Handle form submission
+  const handleSubmit = () => {
+    if (postContent.trim() !== '' || selectedImage) {
+      onPostCreate({
+        content: postContent,
+        image: selectedImage,
+      });
+    }
+    setPostContent('');
+    setSelectedImage(null);
+    onClose();
+  };
+
+  return (
+    <IonModal isOpen={isOpen} onDidDismiss={onClose}>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Create Post</IonTitle>
+          <IonButtons slot="end">
+            <IonButton onClick={onClose}>
+              <IonIcon icon={close} />
+            </IonButton>
+          </IonButtons>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonTextarea
+          placeholder="What's on your mind?"
+          value={postContent}
+          onIonChange={e => setPostContent(e.detail.value!)}
+          rows={4}
+          autoGrow
+        />
+
+        {selectedImage && (
+          <IonImg src={selectedImage} className="ion-margin-top" />
+        )}
+
+        <div className="ion-margin-top">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            style={{ display: 'none' }}
+            id="image-upload"
+          />
+          <IonButton fill="clear" onClick={() => document.getElementById('image-upload')?.click()}>
+            <IonIcon icon={image} slot="start" />
+            Add Photo
+          </IonButton>
+        </div>
+
+        <IonButton expand="block" onClick={handleSubmit} className="ion-margin-top">
+          Post
+        </IonButton>
+      </IonContent>
+    </IonModal>
+  );
+};
+
+// Export the CreatePostModal component
+export default CreatePostModal;

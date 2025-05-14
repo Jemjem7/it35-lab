@@ -36,6 +36,7 @@
     "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
     "@capacitor/cli": "7.0.1",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
@@ -53,6 +54,7 @@
     "terser": "^5.4.0",
     "typescript": "^5.1.6",
     "vite": "~5.2.0",
+    "vite-plugin-pwa": "^1.0.0",
     "vitest": "^0.34.6"
   },
   "description": "An Ionic project"
