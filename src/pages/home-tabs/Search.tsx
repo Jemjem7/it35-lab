@@ -70,7 +70,7 @@ const Search: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonButtons slot='start'>
+          <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
           <IonTitle>Test Search Bar</IonTitle>
@@ -80,8 +80,25 @@ const Search: React.FC = () => {
         <IonSearchbar
           placeholder="Type here..."
           value={query}
-          onIonInput={e => setQuery(e.detail.value!)}
+          onIonInput={e => handleSearch(e.detail.value!)}
         />
+        
+        {loading && (
+          <IonSpinner name="crescent" />
+        )}
+
+        {error && <IonText color="danger"><p>{error}</p></IonText>}
+
+        <IonList>
+          {results.map(result => (
+            <IonItem key={result.pageId}>
+              <IonLabel>
+                <h2>{result.title}</h2>
+                <p dangerouslySetInnerHTML={{ __html: result.snippet }} />
+              </IonLabel>
+            </IonItem>
+          ))}
+        </IonList>
       </IonContent>
     </IonPage>
   );
