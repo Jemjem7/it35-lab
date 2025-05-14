@@ -87,9 +87,7 @@ const Details: React.FC = () => {
               using web technologies such as HTML, CSS, and JavaScript. It allows developers to create 
               apps that work on multiple platforms with a single codebase.
             </p>
-            <IonButton expand="block" onClick={handleButtonClick}>
-              {showMore ? 'Show Less' : 'Show More'}
-            </IonButton>
+          
 
             {showMore && (
               <div className="additional-details">
@@ -106,28 +104,29 @@ const Details: React.FC = () => {
           </div>
 
           <IonItem className="input-item">
-            <IonLabel position="floating">Enter your thoughts:</IonLabel>
-            <IonInput
-              value={inputValue}
-              onIonInput={handleInputChange}
-              placeholder="Type here..."
-              className="input-field"
-            />
-          </IonItem>
-
-          <IonButton expand="block" onClick={handleToast} className="show-toast-btn">
-            Show Toast
-          </IonButton>
-
-          <IonToast
-            isOpen={showToast}
-            onDidDismiss={() => setShowToast(false)}
-            message={`You entered: ${inputValue}`}
-            duration={2000}
-            position="top"
-            color="primary"
-            className="toast-message"
+          <IonLabel position="floating">Enter your thoughts:</IonLabel>
+          <IonInput
+            value={inputValue}
+            onIonInput={(e) => setInputValue(e.detail.value!)}
+            placeholder="Type here..."
+            className="input-field"
           />
+        </IonItem>
+
+        <IonButton expand="block" onClick={() => setShowToast(true)} className="show-toast-btn">
+          Show Toast
+        </IonButton>
+
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message={inputValue ? `You typed: "${inputValue}"` : 'Please enter something!'}
+          duration={2000}
+          position="top"
+          color={inputValue ? 'primary' : 'danger'}
+          className="toast-message"
+        />
+
         </div>
       </IonContent>
     </IonPage>

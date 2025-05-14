@@ -69,7 +69,7 @@ body {
   
   .details-list li::before {
     content: "•";
-    color: #FF3366;
+    color: #ebe9e9;
     position: absolute;
     left: 0;
     top: 0;
@@ -127,7 +127,7 @@ body {
   .toast-message {
     border-radius: 12px;
     padding: 12px;
-    background-color: #FF3366;
+    background-color: #567aaf;
     color: white;
     font-weight: bold;
   }
