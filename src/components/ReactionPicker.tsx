@@ -1,16 +1,22 @@
 import { IonButton, IonIcon } from '@ionic/react';
 import { heartOutline, heart } from 'ionicons/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ReactionPickerProps {
   onReactionSelect: (reaction: string) => void;
 }
 
 const ReactionPicker: React.FC<ReactionPickerProps> = ({ onReactionSelect }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState<boolean>(() => {
+    // Load saved like state from localStorage
+    const saved = localStorage.getItem('reaction_liked');
+    return saved === 'true';
+  });
 
   const handleLike = () => {
-    setIsLiked(!isLiked);
+    const newLikedState = !isLiked;
+    setIsLiked(newLikedState);
+    localStorage.setItem('reaction_liked', newLikedState.toString()); // Save state
     onReactionSelect('like');
   };
 
@@ -39,4 +45,4 @@ const ReactionPicker: React.FC<ReactionPickerProps> = ({ onReactionSelect }) => 
   );
 };
 
-export default ReactionPicker; 
+export default ReactionPicker;

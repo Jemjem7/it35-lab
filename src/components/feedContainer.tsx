@@ -287,35 +287,41 @@ const FeedContainer = () => {
       {user ? (
         <>
           <IonCard>
-            <IonCardHeader>
-              <IonSearchbar />
-              <IonCardTitle>Create a Post</IonCardTitle>
-            </IonCardHeader>
-            <IonCardContent>
-              <IonGrid>
-                <IonRow>
-                  <IonCol size="auto">
-                    <IonAvatar>
-                      <img alt="avatar" src={user.user_metadata?.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'} />
-                    </IonAvatar>
-                  </IonCol>
-                  <IonCol>
-                    <IonTextarea
-                      value={postContent}
-                      onIonChange={e => setPostContent(e.detail.value!)}
-                      placeholder="What's on your mind?"
-                      autoGrow
-                    />
-                  </IonCol>
-                  <IonCol size="auto" className="ion-align-self-end">
-                    <IonButton onClick={createPost} shape="round">
-                      <IonIcon icon={sendOutline} slot="icon-only" />
-                    </IonButton>
-                  </IonCol>
-                </IonRow>
-              </IonGrid>
-            </IonCardContent>
-          </IonCard>
+  <IonCardHeader>
+    <IonCardTitle>Create a Post</IonCardTitle>
+  </IonCardHeader>
+  <IonCardContent>
+    <IonGrid>
+      <IonRow>
+        <IonCol size="auto">
+          <IonAvatar>
+            <img
+              alt="avatar"
+              src={
+                user?.user_metadata?.avatar_url ||
+                'https://ionicframework.com/docs/img/demos/avatar.svg'
+              }
+            />
+          </IonAvatar>
+        </IonCol>
+        <IonCol>
+          <IonTextarea
+            value={postContent}
+            onIonChange={e => setPostContent(e.detail.value!)}
+            placeholder="What's on your mind?"
+            autoGrow
+          />
+        </IonCol>
+        <IonCol size="auto" className="ion-align-self-end">
+          <IonButton onClick={createPost} shape="round">
+            <IonIcon icon={sendOutline} slot="icon-only" />
+          </IonButton>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
+  </IonCardContent>
+</IonCard>
+
 
           {posts.length === 0 ? (
             <div className="ion-text-center">
