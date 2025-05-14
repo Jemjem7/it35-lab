@@ -39,6 +39,7 @@ const About: React.FC = () => {
           </IonCardHeader>
           <IonCardContent>
             <p>Hello! I'm a passionate student at NBSC, diving deep into the world of technology and creativity.</p>
+            "Push through the struggles—never stop learning."
           </IonCardContent>
         </IonCard>
 

@@ -28,10 +28,9 @@ const Notifications: React.FC = () => {
         <IonList>
           <IonItem>
             <IonAvatar slot="start">
-              <img src="https://i.pravatar.cc/150?img=1" alt="avatar" />
             </IonAvatar>
             <IonLabel>
-              <h2>John Doe</h2>
+              <h2>Anonymous</h2>
               <p>Liked your post</p>
               <IonText color="medium">
                 <p>2 hours ago</p>
