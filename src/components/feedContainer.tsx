@@ -3,11 +3,11 @@ import {
   IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput,
   IonLabel, IonModal, IonFooter, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
   IonCardTitle, IonText, IonAvatar, IonCol, IonGrid, IonRow, IonIcon,
-  IonPopover, IonSpinner, IonToast, IonTextarea, IonSearchbar, IonAlert
+  IonPopover, IonSpinner, IonToast, IonTextarea, IonSearchbar, IonAlert, IonList, IonItem, IonButtons
 } from '@ionic/react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../utils/supabaseClient';
-import { pencil, trash, send, ellipsisVertical } from 'ionicons/icons';
+import { pencil, trash, send, ellipsisVertical, heartOutline, heart, chatbubbleOutline, sendOutline } from 'ionicons/icons';
 
 interface Post {
   post_id: string;
@@ -17,7 +17,9 @@ interface Post {
   post_content: string;
   post_created_at: string;
   post_updated_at: string;
-  pinned: boolean; 
+  likes?: number;
+  comments?: any[];
+  pinned?: boolean;
 }
 
 const FeedContainer = () => {
@@ -25,11 +27,13 @@ const FeedContainer = () => {
   const [postContent, setPostContent] = useState('');
   const [editingPost, setEditingPost] = useState<Post | null>(null);
   const [editContent, setEditContent] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [newComment, setNewComment] = useState('');
+  const [activePost, setActivePost] = useState<number | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [toastMessage, setToastMessage] = useState('');
   const [popoverState, setPopoverState] = useState<{ open: boolean; event: Event | null; postId: string | null }>({ open: false, event: null, postId: null });
   const [showDeleteAlert, setShowDeleteAlert] = useState<{ open: boolean; postId: string | null }>({ open: false, postId: null });
   
@@ -51,41 +55,145 @@ const FeedContainer = () => {
     };
 
     const fetchPosts = async () => {
-      const { data } = await supabase
-        .from('posts')
-        .select('*')
-        .order('pinned', { ascending: false })
-        .order('post_created_at', { ascending: false });
-      setPosts(data || []);
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('post_created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (data) {
+          setPosts(data);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setToastMessage('Failed to load posts');
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     (async () => {
       await fetchUser();
       await fetchPosts();
-      setIsLoading(false);
     })();
   }, []);
 
+  const handleLike = async (postId: number) => {
+    try {
+      const post = posts.find(p => p.post_id === postId.toString());
+      if (!post) return;
+
+      const currentLikes = post.likes || 0;
+      const { error } = await supabase
+        .from('posts')
+        .update({ likes: currentLikes + 1 })
+        .eq('post_id', postId.toString());
+
+      if (error) throw error;
+
+      setPosts(posts.map(p => 
+        p.post_id === postId.toString() 
+          ? { ...p, likes: (p.likes || 0) + 1 }
+          : p
+      ));
+    } catch (error) {
+      console.error('Error liking post:', error);
+      setToastMessage('Failed to like post');
+    }
+  };
+
+  const handleComment = async (postId: number) => {
+    if (!newComment.trim()) return;
+
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) throw new Error('User not authenticated');
+
+      const { data: profileData } = await supabase
+        .from('users')
+        .select('user_id, username, user_avatar_url')
+        .eq('user_email', userData.user.email)
+        .single();
+
+      if (!profileData) throw new Error('User profile not found');
+
+      const comment = {
+        id: Date.now(),
+        user: {
+          name: profileData.username,
+          avatar: profileData.user_avatar_url || 'https://i.pravatar.cc/150?img=1'
+        },
+        content: newComment,
+        timestamp: new Date().toLocaleString()
+      };
+
+      const post = posts.find(p => p.post_id === postId.toString());
+      if (!post) return;
+
+      const currentComments = post.comments || [];
+      const { error } = await supabase
+        .from('posts')
+        .update({ 
+          comments: [...currentComments, comment]
+        })
+        .eq('post_id', postId.toString());
+
+      if (error) throw error;
+
+      setPosts(posts.map(p =>
+        p.post_id === postId.toString()
+          ? { ...p, comments: [...(p.comments || []), comment] }
+          : p
+      ));
+
+      setNewComment('');
+      setActivePost(null);
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      setToastMessage('Failed to add comment');
+    }
+  };
+
   const createPost = async () => {
-    if (!postContent.trim() || !user || !username) return;
+    if (!postContent.trim()) return;
 
-    const { data: userData } = await supabase
-      .from('users')
-      .select('user_avatar_url')
-      .eq('user_id', user.id)
-      .single();
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) throw new Error('User not authenticated');
 
-    const avatarUrl = userData?.user_avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg';
+      const { data: profileData } = await supabase
+        .from('users')
+        .select('user_id, username, user_avatar_url')
+        .eq('user_email', userData.user.email)
+        .single();
 
-    const { data } = await supabase
-      .from('posts')
-      .insert([{ post_content: postContent, user_id: user.id, username, avatar_url: avatarUrl }])
-      .select('*');
+      if (!profileData) throw new Error('User profile not found');
 
-    if (data) {
-      setPosts([data[0], ...posts]);
-      setToastMessage('Post created!');
-      setPostContent('');
+      const newPost = {
+        user_id: profileData.user_id,
+        username: profileData.username,
+        avatar_url: profileData.user_avatar_url || 'https://i.pravatar.cc/150?img=1',
+        post_content: postContent
+      };
+
+      const { data, error } = await supabase
+        .from('posts')
+        .insert([newPost])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setPosts([data, ...posts]);
+        setPostContent('');
+        setToastMessage('Post created successfully!');
+      }
+    } catch (error) {
+      console.error('Error creating post:', error);
+      setToastMessage('Failed to create post');
     }
   };
 
@@ -143,6 +251,14 @@ const FeedContainer = () => {
     setToastMessage('Post updated!');
   };
 
+  if (isLoading) {
+    return (
+      <div className="ion-text-center ion-padding">
+        <IonSpinner />
+      </div>
+    );
+  }
+
   return (
     <IonContent fullscreen className="ion-padding">
       <IonToast
@@ -187,7 +303,7 @@ const FeedContainer = () => {
                   </IonCol>
                   <IonCol size="auto" className="ion-align-self-end">
                     <IonButton onClick={createPost} shape="round">
-                      <IonIcon icon={send} slot="icon-only" />
+                      <IonIcon icon={sendOutline} slot="icon-only" />
                     </IonButton>
                   </IonCol>
                 </IonRow>
@@ -195,8 +311,12 @@ const FeedContainer = () => {
             </IonCardContent>
           </IonCard>
 
-          {isLoading ? (
-            <IonSpinner name="crescent" />
+          {posts.length === 0 ? (
+            <div className="ion-text-center">
+              <IonText color="medium">
+                <p>No posts yet. Be the first to post!</p>
+              </IonText>
+            </div>
           ) : (
             posts.map(post => (
               <IonCard key={post.post_id} className="animate__animated animate__fadeInUp">
@@ -227,12 +347,50 @@ const FeedContainer = () => {
                     <p>{post.post_content}</p>
                   </IonText>
 
-                  {/* Pin Button */}
-                  <IonRow className="ion-justify-content-center ion-padding-vertical">
-                    <IonButton fill="clear" onClick={() => togglePinPost(post.post_id)}>
-                      {post.pinned ? 'Unpin' : 'Pin'}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                    <IonButton fill="clear" onClick={() => handleLike(parseInt(post.post_id))}>
+                      <IonIcon icon={(post.likes || 0) > 0 ? heart : heartOutline} color={(post.likes || 0) > 0 ? 'danger' : 'medium'} />
+                      <IonText>{post.likes || 0}</IonText>
                     </IonButton>
-                  </IonRow>
+                    <IonButton fill="clear" onClick={() => setActivePost(activePost === parseInt(post.post_id) ? null : parseInt(post.post_id))}>
+                      <IonIcon icon={chatbubbleOutline} />
+                      <IonText>{post.comments?.length || 0}</IonText>
+                    </IonButton>
+                  </div>
+
+                  {activePost === parseInt(post.post_id) && (
+                    <div className="ion-margin-top">
+                      <IonList>
+                        {post.comments.map(comment => (
+                          <IonItem key={comment.id}>
+                            <IonAvatar slot="start">
+                              <img src={comment.user.avatar} alt={comment.user.name} />
+                            </IonAvatar>
+                            <IonLabel>
+                              <h3>{comment.user.name}</h3>
+                              <p>{comment.content}</p>
+                              <p><small>{comment.timestamp}</small></p>
+                            </IonLabel>
+                          </IonItem>
+                        ))}
+                      </IonList>
+
+                      <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
+                        <IonTextarea
+                          placeholder="Write a comment..."
+                          value={newComment}
+                          onIonChange={e => setNewComment(e.detail.value!)}
+                          rows={1}
+                          autoGrow
+                        />
+                        <IonButtons>
+                          <IonButton onClick={() => handleComment(parseInt(post.post_id))}>
+                            <IonIcon icon={sendOutline} />
+                          </IonButton>
+                        </IonButtons>
+                      </div>
+                    </div>
+                  )}
                 </IonCardContent>
 
                 <IonPopover
