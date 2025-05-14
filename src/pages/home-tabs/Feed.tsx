@@ -1,4 +1,4 @@
-import { 
+import {
   IonButtons,
   IonContent, 
   IonHeader, 
@@ -18,10 +18,11 @@ import CreatePostModal from '../../components/CreatePostModal';
 const Feed: React.FC = () => {
   const [showCreatePost, setShowCreatePost] = useState(false);
 
-  const handlePostCreate = () => {
-    // Logic to handle post creation
-    console.log('Post Created');
-    setShowCreatePost(false);  // Close the modal after creating a post
+  const handlePostCreate = (post: { content: string; image: string | null }) => {
+    // Handle the post creation here, for example, add it to the feed or call an API to save it
+    console.log('New post created:', post);
+    // Close the modal after post is created
+    setShowCreatePost(false);
   };
 
   return (
@@ -44,7 +45,7 @@ const Feed: React.FC = () => {
         <CreatePostModal 
           isOpen={showCreatePost}
           onClose={() => setShowCreatePost(false)}
-          onPostCreate={handlePostCreate}  // Pass the handler here
+          onPostCreate={handlePostCreate} // Pass the function here
         />
       </IonContent>
     </IonPage>

@@ -3,11 +3,11 @@ import {
   IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton, IonInput,
   IonLabel, IonModal, IonFooter, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle,
   IonCardTitle, IonText, IonAvatar, IonCol, IonGrid, IonRow, IonIcon,
-  IonPopover, IonSpinner, IonToast, IonTextarea, IonSearchbar, IonAlert
+  IonPopover, IonSpinner, IonToast, IonAlert, IonTextarea, IonSearchbar
 } from '@ionic/react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '../utils/supabaseClient';
-import { pencil, trash, send, ellipsisVertical } from 'ionicons/icons';
+import { pencil, trash, ellipsisVertical } from 'ionicons/icons';
 
 interface Post {
   post_id: string;
@@ -33,6 +33,7 @@ const FeedContainer = () => {
   const [popoverState, setPopoverState] = useState<{ open: boolean; event: Event | null; postId: string | null }>({ open: false, event: null, postId: null });
   const [showDeleteAlert, setShowDeleteAlert] = useState<{ open: boolean; postId: string | null }>({ open: false, postId: null });
 
+  // Fetch user details and posts on component mount
   useEffect(() => {
     const fetchUser = async () => {
       const { data: authData } = await supabase.auth.getUser();
@@ -66,6 +67,7 @@ const FeedContainer = () => {
     })();
   }, []);
 
+  // Create a new post
   const createPost = async () => {
     if (!postContent.trim() || !user || !username) return;
 
@@ -90,12 +92,14 @@ const FeedContainer = () => {
     }
   };
 
+  // Delete a post
   const deletePost = async (post_id: string) => {
     setPosts(posts.filter(post => post.post_id !== post_id));
     await supabase.from('posts').delete().match({ post_id });
     setToastMessage('Post deleted!');
   };
 
+  // Open edit modal with existing post content
   const openEditModal = (post: Post) => {
     setEditingPost(post);
     setEditContent(post.post_content);
@@ -103,6 +107,7 @@ const FeedContainer = () => {
     setIsEditing(true);
   };
 
+  // Save changes after editing a post
   const saveEdit = async () => {
     if (!editingPost) return;
     await supabase
@@ -123,6 +128,7 @@ const FeedContainer = () => {
 
   return (
     <IonContent fullscreen className="ion-padding">
+      {/* Toast Notification */}
       <IonToast
         isOpen={!!toastMessage}
         message={toastMessage}
@@ -130,6 +136,8 @@ const FeedContainer = () => {
         color="success"
         onDidDismiss={() => setToastMessage('')}
       />
+
+      {/* Delete Post Confirmation */}
       <IonAlert
         isOpen={showDeleteAlert.open}
         header="Delete Post"
@@ -191,6 +199,7 @@ const FeedContainer = () => {
                   <IonText><p>{post.post_content}</p></IonText>
                 </IonCardContent>
 
+                {/* Post Options Popover */}
                 <IonPopover
                   isOpen={popoverState.open && popoverState.postId === post.post_id}
                   event={popoverState.event}
